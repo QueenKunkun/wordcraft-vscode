@@ -2,35 +2,35 @@
 
 View Microsoft Word documents (.docx, .doc) inside VS Code, powered by the
 [WordCraft](https://github.com/storytold/wordcraft) engine compiled from Rust to WebAssembly,
-with the full ribbon, dialogs, page layout and document fidelity — fully offline. Read-only.
+with page layout, headers/footers and document fidelity. Read-only.
 
 ## Features
 
 <!-- Keep this list short: one line per feature, user-visible capabilities only.
      Update it on every major release (see .opencode/skills/release/SKILL.md). -->
 
-- feat: Open Microsoft Word documents (.docx/.doc) read-only next to your code
-- feat: View Chinese Word documents with correct fonts, no missing glyphs
+- Open Microsoft Word documents (.docx/.doc) read-only next to your code
+- View Chinese Word documents with correct fonts, no missing glyphs
 
 Not affiliated with or endorsed by Microsoft. Built on
 [WordCraft](https://github.com/storytold/wordcraft), the open-source engine.
 
 ## How to use
 
-Open any `.docx` or `.doc` file in VS Code. (TODO: hook up the custom editor; scaffold only for now.)
+Open any `.docx` or `.doc` file in VS Code — it renders in the WordCraft viewer instead of
+showing raw XML. Close the tab to release the viewer.
 
 ## Requirements
 
-None — fonts and rendering run in the webview (WebGPU with WebGL2 fallback).
-
-## Extension Settings
-
-* `myExtension.enable`: Enable/disable this extension.
+- Rendering runs entirely in the webview (WebGL).
+- Chinese documents fetch their CJK fonts (Noto Serif/Sans SC) on first open — needs network
+  once per window, then cached in IndexedDB.
 
 ## Known Issues
 
+- The UI (status bar, menus) is English-only.
+- `.docm`/`.dotm` open read-only; some documents may not render 100% faithfully.
+
 ## Release Notes
 
-### 0.0.1
-
-Initial scaffold.
+See [CHANGELOG.md](CHANGELOG.md).
