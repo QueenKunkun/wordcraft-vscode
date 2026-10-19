@@ -38,12 +38,62 @@ const fontFileCache = new Map<string, Promise<Uint8Array[]>>();
 function cjkFontFile(url: string): Promise<Uint8Array[]> {
 	let p = fontFileCache.get(url);
 	if (!p) {
-		p = fetch(url).then((r) => {
-			if (!r.ok) throw new Error(`HTTP ${r.status}`);
-			return r.arrayBuffer();
-		}).then((b) => [new Uint8Array(b)]);
+		p = cachedFontBytes(url).then((b) => [b]);
+		p.catch(() => fontFileCache.delete(url));
 	}
 	return p;
+}
+
+// The font TTFs are ~10-25 MB; the webview (and its JS heap) dies with the editor tab, so an
+// in-memory cache only helps one document session. IndexedDB survives webview reloads in the
+// same window and stores ArrayBuffers natively.
+const FONT_DB = 'wordcraft-cache';
+const FONT_STORE = 'fonts';
+function cachedFontBytes(url: string): Promise<Uint8Array> {
+	return idbGet(FONT_DB, FONT_STORE, url).catch((e) => {
+		console.warn('[wordcraft] font cache read:', e);
+		return undefined;
+	}).then((payload) => {
+		if (payload) {
+			console.info('[wordcraft] font cache hit:', url);
+			return new Uint8Array(payload);
+		}
+		return fetch(url).then((r) => {
+			if (!r.ok) throw new Error(`HTTP ${r.status}`);
+			return r.arrayBuffer();
+		}).then((buf) => {
+			idbPut(FONT_DB, FONT_STORE, url, buf).catch((e) => console.warn('[wordcraft] font cache write:', e));
+			return new Uint8Array(buf);
+		});
+	});
+}
+
+function idbOpen(name: string, store: string): Promise<IDBDatabase> {
+	return new Promise((resolve, reject) => {
+		const req = indexedDB.open(name, 1);
+		req.onupgradeneeded = () => {
+			if (!req.result.objectStoreNames.contains(store)) req.result.createObjectStore(store);
+		};
+		req.onsuccess = () => resolve(req.result);
+		req.onerror = () => reject(req.error ?? new Error('indexedDB.open failed'));
+	});
+}
+function idbGet(db: string, store: string, key: string): Promise<ArrayBuffer | undefined> {
+	return idbOpen(db, store).then((conn) => new Promise((resolve, reject) => {
+		const tx = conn.transaction(store, 'readonly');
+		const req = tx.objectStore(store).get(key);
+		req.onsuccess = () => resolve(req.result as ArrayBuffer | undefined);
+		req.onerror = () => reject(req.error ?? new Error('indexedDB.get failed'));
+		tx.oncomplete = () => conn.close();
+	}));
+}
+function idbPut(db: string, store: string, key: string, value: ArrayBuffer): Promise<void> {
+	return idbOpen(db, store).then((conn) => new Promise((resolve, reject) => {
+		const tx = conn.transaction(store, 'readwrite');
+		tx.objectStore(store).put(value, key);
+		tx.onerror = () => reject(tx.error ?? new Error('indexedDB.put failed'));
+		tx.oncomplete = () => { conn.close(); resolve(); };
+	}));
 }
 
 const cjkFontSource: FontSource = {
