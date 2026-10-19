@@ -19,14 +19,22 @@ window.acquireVsCodeApi = function () {
 	return {
 		postMessage(msg) {
 			if (msg && msg.type === 'ready') {
-				fetch('/dist/100004.docx')
-					.then(r => r.arrayBuffer())
+				// Test any local file: /dist/<name> via ?file=<name> (dist/ is a gitignored sandbox).
+				const name = new URLSearchParams(location.search).get('file') || '100004.docx';
+				fetch('/dist/' + name)
+					.then(r => {
+						if (!r.ok) throw new Error('harness: ' + name + ' -> HTTP ' + r.status);
+						return r.arrayBuffer();
+					})
 					.then(buf => {
 						window.postMessage({
 							type: 'open',
-							name: '100004.docx',
+							name: name,
 							data: bytesToBase64(new Uint8Array(buf)),
 						}, '*');
+					})
+					.catch(e => {
+						window.postMessage({ type: 'error', message: String(e) }, '*');
 					});
 			}
 		},

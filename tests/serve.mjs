@@ -17,7 +17,7 @@ const MIME = {
 
 createServer((req, res) => {
 	const path = req.url.split('?')[0].split('#')[0];
-	const file = `${ROOT}${path}`;
+	const file = `${ROOT}${decodeURIComponent(path)}`;
 	if (!existsSync(file)) { res.writeHead(404); res.end('not found'); return; }
 	for (const [ext, type] of Object.entries(MIME)) {
 		if (path.endsWith(ext)) res.setHeader('Content-Type', type);
