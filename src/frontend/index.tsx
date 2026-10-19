@@ -161,8 +161,9 @@ function App() {
 			dark={dark}
 			fonts={cjkFontSource}
 			// The UI font face in the wasm build has no CJK glyphs yet; English labels avoid tofu
-			// in the status bar and menus.
-			prefs={{ language: 'en' }}
+			// in the status bar and menus. miniToolbar is WordCraft's editing toolbar on text
+			// selection — pointless in a read-only viewer (commands are ignored in view mode).
+			prefs={{ language: 'en', miniToolbar: false }}
 			renderer="webgl"
 			wasmUrl={wasmUrl}
 			onError={(err) => setError(err instanceof Error ? err.message : String(err))}
