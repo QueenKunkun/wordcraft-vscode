@@ -1,6 +1,6 @@
 {
-  "name": "wordcraft",
-  "displayName": "wordcraft",
+  "name": "wordcraft-vscode",
+  "displayName": "wordcraft-vscode",
   "description": "open word document in vscode",
   "version": "0.0.1",
   "engines": {
