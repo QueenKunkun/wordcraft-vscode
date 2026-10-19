@@ -9,6 +9,12 @@ with the full ribbon, dialogs, page layout and document fidelity — fully offli
 <!-- Keep this list short: one line per feature, user-visible capabilities only.
      Update it on every major release (see .opencode/skills/release/SKILL.md). -->
 
+- feat: Open Microsoft Word documents (.docx/.doc) read-only next to your code
+- feat: View Chinese Word documents with correct fonts, no missing glyphs
+
+Not affiliated with or endorsed by Microsoft. Built on
+[WordCraft](https://github.com/storytold/wordcraft), the open-source engine.
+
 ## How to use
 
 Open any `.docx` or `.doc` file in VS Code. (TODO: hook up the custom editor; scaffold only for now.)

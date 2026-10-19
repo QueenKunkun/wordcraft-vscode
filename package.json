@@ -3,7 +3,7 @@
   "displayName": "WordCraft Viewer",
   "publisher": "KristinZhang",
   "license": "MIT",
-	"description": "View Microsoft Word documents (.docx/.doc) inside VS Code — fast, faithful rendering with the WordCraft Rust-to-WASM engine. Read-only.",
+  "description": "View Microsoft Word documents (.docx/.doc) inside VS Code — fast, faithful rendering with the WordCraft Rust-to-WASM engine. Read-only.",
   "icon": "images/icon.png",
   "repository": {
     "url": "https://github.com/QueenKunkun/wordcraft-vscode"
@@ -15,7 +15,7 @@
     "preview",
     "viewer"
   ],
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.140.0"
   },
@@ -40,9 +40,9 @@
     ]
   },
   "scripts": {
-		"vscode:prepublish": "pnpm run build:frontend && pnpm run package",
-		"build:frontend": "node scripts/copy-wasm.mjs && pnpm run typecheck:frontend && esbuild src/frontend/index.tsx --bundle --minify --format=esm --jsx=automatic --define:process.env.NODE_ENV=\\\"production\\\" --loader:.wasm=file --outfile=dist/app.js",
-		"typecheck:frontend": "tsc -p tsconfig.frontend.json",
+    "vscode:prepublish": "pnpm run build:frontend && pnpm run package",
+    "build:frontend": "node scripts/copy-wasm.mjs && pnpm run typecheck:frontend && esbuild src/frontend/index.tsx --bundle --minify --format=esm --jsx=automatic --define:process.env.NODE_ENV=\\\"production\\\" --loader:.wasm=file --outfile=dist/app.js",
+    "typecheck:frontend": "tsc -p tsconfig.frontend.json",
     "compile": "webpack",
     "watch": "concurrently -n fe,ext -c cyan,green 'pnpm run build:frontend -- --watch' 'webpack --watch'",
     "package": "webpack --mode production --devtool hidden-source-map",
