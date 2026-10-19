@@ -15,6 +15,11 @@ with page layout, headers/footers and document fidelity. Read-only.
 Not affiliated with or endorsed by Microsoft. Built on
 [WordCraft](https://github.com/storytold/wordcraft), the open-source engine.
 
+## Install (from market)
+
+1. Download from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=KristinZhang.wordcraft-vscode) or
+2. Download from [openvsx](https://open-vsx.org/extension/KristinZhang/wordcraft-vscode)
+
 ## How to use
 
 Open any `.docx` or `.doc` file in VS Code — it renders in the WordCraft viewer instead of
