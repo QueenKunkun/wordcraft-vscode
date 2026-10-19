@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>WordCraft Viewer harness</title>
+<style>html, body, #root { height: 100%; margin: 0; }</style>
+</head>
+<body class="vscode-dark">
+<div id="root"></div>
+<script>
+function bytesToBase64(bytes) {
+	let out = '';
+	for (let i = 0; i < bytes.length; i += 0x8000) {
+		out += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+	}
+	return btoa(out);
+}
+window.acquireVsCodeApi = function () {
+	return {
+		postMessage(msg) {
+			if (msg && msg.type === 'ready') {
+				fetch('/dist/100004.docx')
+					.then(r => r.arrayBuffer())
+					.then(buf => {
+						window.postMessage({
+							type: 'open',
+							name: '100004.docx',
+							data: bytesToBase64(new Uint8Array(buf)),
+						}, '*');
+					});
+			}
+		},
+	};
+};
+self.globalThis.WORDCRAFT_WASM_URL = '/dist/wordcraft_embed_bg.wasm';
+</script>
+<script type="module" src="/dist/app.js"></script>
+</body>
+</html>

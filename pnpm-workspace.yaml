@@ -1,0 +1,4 @@
+allowBuilds:
+  # The wasm loader inside @gamine/wordcraft-react and the esbuild build run fine;
+  # esbuild's postinstall just verifies its binary, so allow it.
+  esbuild: true

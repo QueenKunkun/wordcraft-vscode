@@ -1,66 +1,83 @@
 {
-	"name": "wordcraft-vscode",
-	"displayName": "WordCraft Viewer",
-	"publisher": "KristinZhang",
-	"license": "MIT",
-	"description": "View Word documents (docx/doc) inside VS Code, powered by WordCraft's Rust-to-WASM rendering",
-	"icon": "images/icon.png",
-	"repository": {
-		"url": "https://github.com/QueenKunkun/wordcraft-vscode"
-	},
-	"keywords": [
-		"docx",
-		"doc",
-		"word",
-		"preview",
-		"viewer"
-	],
-	"version": "0.0.1",
-	"engines": {
-		"vscode": "^1.140.0"
-	},
+  "name": "wordcraft-vscode",
+  "displayName": "WordCraft Viewer",
+  "publisher": "KristinZhang",
+  "license": "MIT",
+  "description": "View Word documents (docx/doc) inside VS Code, powered by WordCraft's Rust-to-WASM rendering",
+  "icon": "images/icon.png",
+  "repository": {
+    "url": "https://github.com/QueenKunkun/wordcraft-vscode"
+  },
+  "keywords": [
+    "docx",
+    "doc",
+    "word",
+    "preview",
+    "viewer"
+  ],
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.140.0"
+  },
   "categories": [
     "Other"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
+    "customEditors": [
       {
-        "command": "wordcraft.helloWorld",
-        "title": "Hello World"
+        "viewType": "wordcraft.viewer",
+        "displayName": "WordCraft Viewer",
+        "selector": [
+          {
+            "filenamePattern": "*.{docx,doc,dot,dotx,dotm,docm}",
+            "$comment": "docm/dotm open read-only; content controls may not survive — viewer only"
+          }
+        ],
+        "priority": "default"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run package",
+		"vscode:prepublish": "pnpm run build:frontend && pnpm run package",
+		"build:frontend": "node scripts/copy-wasm.mjs && pnpm run typecheck:frontend && esbuild src/frontend/index.tsx --bundle --minify --format=esm --jsx=automatic --define:process.env.NODE_ENV=\\\"production\\\" --loader:.wasm=file --outfile=dist/app.js",
+		"typecheck:frontend": "tsc -p tsconfig.frontend.json",
     "compile": "webpack",
-    "watch": "webpack --watch",
+    "watch": "concurrently -n fe,ext -c cyan,green 'pnpm run build:frontend -- --watch' 'webpack --watch'",
     "package": "webpack --mode production --devtool hidden-source-map",
-		"compile-tests": "tsc -p . --outDir out",
-		"watch-tests": "tsc -p . -w --outDir out",
-		"pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-		"lint": "eslint src",
-		"test": "vscode-test",
-		"publish-all": "node scripts/check-size.mjs && pnpm publish-vsce && pnpm publish-ovsx",
-		"package-vsix": "npx @vscode/vsce package --no-dependencies",
-		"install-local": "bash scripts/install-local.sh",
-		"publish-vsce": "bash -c 'source .env && VSCE_PAT=$VSCE_PAT npx @vscode/vsce publish --packagePath wordcraft-vscode.vsix --no-dependencies'",
-		"publish-ovsx": "bash -c 'source .env && npx ovsx publish wordcraft-vscode.vsix -p $vsx_token --no-dependencies'"
-	},
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test",
+    "publish-all": "node scripts/check-size.mjs && pnpm publish-vsce && pnpm publish-ovsx",
+    "package-vsix": "npx @vscode/vsce package --no-dependencies",
+    "install-local": "bash scripts/install-local.sh",
+    "publish-vsce": "bash -c 'source .env && VSCE_PAT=$VSCE_PAT npx @vscode/vsce publish --packagePath wordcraft-vscode.vsix --no-dependencies'",
+    "publish-ovsx": "bash -c 'source .env && npx ovsx publish wordcraft-vscode.vsix -p $vsx_token --no-dependencies'"
+  },
   "devDependencies": {
-    "@types/vscode": "^1.140.0",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
+    "@types/react-dom": "^18.3.7",
+    "@types/vscode": "^1.140.0",
     "@typescript-eslint/eslint-plugin": "^8.42.0",
     "@typescript-eslint/parser": "^8.42.0",
-    "eslint": "^9.34.0",
-    "typescript": "^5.9.2",
-    "ts-loader": "^9.5.4",
-    "webpack": "^5.101.3",
-    "webpack-cli": "^6.0.1",
     "@vscode/test-cli": "^0.0.11",
-    "@vscode/test-electron": "^2.5.2"
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.28.1",
+    "eslint": "^9.34.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.9.2",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
   },
-  "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621"
+  "packageManager": "pnpm@11.22.0+sha512.1ff870c4c6133dfd88fb2afc46dd13d47f09c9794b438c6fdb47ca98caf3bc16381ee0be93a091b8e3824cf01f889f46d7d9e20910fb0be1ab0fb5baa80dd621",
+  "dependencies": {
+    "@gamine/wordcraft-react": "^0.3.6",
+    "@types/react": "^18.3.31",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
 }

@@ -31,7 +31,8 @@ const extensionConfig = {
     rules: [
       {
         test: /\.ts$/,
-        exclude: /node_modules/,
+        // src/frontend is bundled by esbuild ("build:frontend"), not here.
+        exclude: [/node_modules/, /src[\\/]frontend/],
         use: [
           {
             loader: 'ts-loader'
