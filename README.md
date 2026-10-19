@@ -1,8 +1,8 @@
 # WordCraft Viewer
 
-View Word documents (.docx, .doc) inside VS Code, powered by the
+View Microsoft Word documents (.docx, .doc) inside VS Code, powered by the
 [WordCraft](https://github.com/storytold/wordcraft) engine compiled from Rust to WebAssembly,
-with the full ribbon, dialogs, page layout and document fidelity — fully offline.
+with the full ribbon, dialogs, page layout and document fidelity — fully offline. Read-only.
 
 ## Features
 

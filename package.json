@@ -3,7 +3,7 @@
   "displayName": "WordCraft Viewer",
   "publisher": "KristinZhang",
   "license": "MIT",
-  "description": "View Word documents (docx/doc) inside VS Code, powered by WordCraft's Rust-to-WASM rendering",
+	"description": "View Microsoft Word documents (.docx/.doc) inside VS Code — fast, faithful rendering with the WordCraft Rust-to-WASM engine. Read-only.",
   "icon": "images/icon.png",
   "repository": {
     "url": "https://github.com/QueenKunkun/wordcraft-vscode"
