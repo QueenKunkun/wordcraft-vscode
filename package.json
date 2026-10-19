@@ -1,11 +1,24 @@
 {
-  "name": "wordcraft-vscode",
-  "displayName": "wordcraft-vscode",
-  "description": "open word document in vscode",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.140.0"
-  },
+	"name": "wordcraft-vscode",
+	"displayName": "WordCraft Viewer",
+	"publisher": "KristinZhang",
+	"license": "MIT",
+	"description": "View Word documents (docx/doc) inside VS Code, powered by WordCraft's Rust-to-WASM rendering",
+	"icon": "images/icon.png",
+	"repository": {
+		"url": "https://github.com/QueenKunkun/wordcraft-vscode"
+	},
+	"keywords": [
+		"docx",
+		"doc",
+		"word",
+		"preview",
+		"viewer"
+	],
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.140.0"
+	},
   "categories": [
     "Other"
   ],
@@ -24,12 +37,17 @@
     "compile": "webpack",
     "watch": "webpack --watch",
     "package": "webpack --mode production --devtool hidden-source-map",
-    "compile-tests": "tsc -p . --outDir out",
-    "watch-tests": "tsc -p . -w --outDir out",
-    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
+		"compile-tests": "tsc -p . --outDir out",
+		"watch-tests": "tsc -p . -w --outDir out",
+		"pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+		"lint": "eslint src",
+		"test": "vscode-test",
+		"publish-all": "node scripts/check-size.mjs && pnpm publish-vsce && pnpm publish-ovsx",
+		"package-vsix": "npx @vscode/vsce package --no-dependencies",
+		"install-local": "bash scripts/install-local.sh",
+		"publish-vsce": "bash -c 'source .env && VSCE_PAT=$VSCE_PAT npx @vscode/vsce publish --packagePath wordcraft-vscode.vsix --no-dependencies'",
+		"publish-ovsx": "bash -c 'source .env && npx ovsx publish wordcraft-vscode.vsix -p $vsx_token --no-dependencies'"
+	},
   "devDependencies": {
     "@types/vscode": "^1.140.0",
     "@types/mocha": "^10.0.10",
